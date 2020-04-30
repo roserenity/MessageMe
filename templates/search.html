@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %} 
+        A Reader's Review - Search
+{% endblock %}
+
+{% block script %} 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $(document.body).on("click", "tr[data-href]", function(){
+                window.location.href = this.dataset.href;
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block body %} 
+    <div id="nav_div" class="container-fluid olive_bg">
+        <div class="row p-2">
+            <div id="welcome_div" class="col-sm-4">
+                <h5 class="charade">Welcome {{ session["username"] }}!</h5>
+            </div>
+            <div class="col-sm-4"></div>
+            <div id="logout_div" class="col-sm-4">
+                <h5><a class="charade" href='/a-readers-review/logout'> LOGOUT </a><h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-2"></div>
+            <div id="search_div" class="col-sm-8 pt-4">
+                <form action="/a-readers-review/search" method="POST">
+                    <input id="search" name="search" type="text" placeholder="Search by book title, author or ISBN bumber">      
+                    <button id="submit" type="submit"> search </button>
+                </form>
+                <div class="wax_flower">
+                {% if books %}
+                    {% if books == 0 %}
+                        No books found
+                    {% else %}
+                        There are {{ results }} results:
+                    {% endif %}
+                {% endif %}
+                </div>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+
+    {% block result %}
+    {% if results %}
+    <div class="wax_flower container-fluid">
+            <div class="row pt-2 pb-5">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-8 wax_flower_bg">
+                    <table class="table">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">ISBN</th>
+                            <th scope="col">TITLE</th>
+                            <th scope="col">AUTHOR</th>
+                            <th scope="col">YEAR</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for book in books: %}
+                            <tr data-href="/a-readers-review/book_info/{{ book[0] }}">
+                                <td>{{ book[0] }}</td>
+                                <td>{{ book[1].replace('//', '"').replace("/ ", ", ").replace("/", "'") }}</td>
+                                <td>{{ book[2].replace('//', '').replace("/ ", ", ").replace("/", "'") }}</td>
+                                <td>{{ book[3] }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        </table>
+                </div>
+                <div class="col-sm-2"></div>
+            </div>
+    </div>
+    {% endif %}
+    {% endblock %}
+
+{% endblock %}
+
+
+{% block footer %}
+    ALL RIGHTS RESERVED 2020    |   A READER'S REVIEW</h6>
+{% endblock %}
