@@ -1,0 +1,104 @@
+body {
+    background-color: #1F1F29;
+}
+
+.title_page {
+    color: #FEC6AD;
+}
+
+.login_register {
+    background-color: #FEC6AD;
+    color: #1F1F29;
+    padding: 5%;
+    height: 100%;
+    text-align: center;
+}
+
+.footer {
+    background-color: #FE6323;
+    text-align: center;
+    font-style: italic;
+    left: 0;
+    bottom:0;
+    position: fixed;
+    padding: 1%;
+}
+
+.input {
+    border-radius: 20%, 0, 20%, 0;
+    width: 100%;
+}
+
+.olive {
+    color: #A2B75C;
+}
+
+.olive_bg {
+    background-color: #A2B75C;
+}
+
+.wax_flower {
+    color: #FEC6AD;
+}
+
+.wax_flower_bg {
+    background: #FEC6AD;
+}
+
+.orange {
+    color: #FE6323;
+}
+
+.charade {
+    color: #1F1F29
+}
+
+.charade_bg {
+    background-color: #1F1F29
+}
+
+.orange_bg {
+    background: #FE6323;
+}
+
+#nav_div {
+    text-decoration: none;
+    text-align: center;
+}
+
+#search {
+    width: 80%;
+}
+
+#search_div {
+    display: inline;
+}
+
+ul li {
+    list-style-type: none;
+    display: inline;
+}
+
+#welcome_div {
+    text-align: left;
+}
+
+#logout_div {
+    text-align: right;
+}
+
+tr[data-href], span {
+    cursor: pointer;
+}
+
+tr[data-href]:hover,  #info_div{
+    background-color: rgb(253, 177, 142);
+}
+
+img {
+    width: 3%;
+}
+
+#review_div {
+    text-align: center;
+}
