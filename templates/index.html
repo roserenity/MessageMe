@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %} 
+        A Reader's Review - Login
+{% endblock %}
+
+{% block body %} 
+    <div class="container-fluid">
+        <div class="row center pt-5">
+            <div class="col-sm "></div>
+            <div class="col-sm title_page pt-5">
+                <h1>ARR: A Reader's Review</h1> <br />
+                <h6>Finding a good book? </h6>
+                <h6>Want to review a book?</h6><br />
+                <h5>Here at ARR, we are full of book reviews from readers like you </h5>
+            </div>
+            <div class="col-sm pt-5">
+                <div class="login_register ">
+                    {% block form %}
+                        {% if message %}
+                        <h6 class="text-danger">{{ message }}</h6>
+                        {% endif %}
+                        {% if success %}
+                        <h6 class="text-success">{{ success }}</h6>
+                        {% endif %}
+                        <form action="/a-readers-review/login" method="POST">
+                            <h5><input class="input" name="username" type="text" placeholder="Username" required></h5>
+                            <h5><input class="input" name="password" type="password" placeholder="Password" required></h5>
+                            <input type="submit">
+                        </form>
+                        <h6>Don't have an account yet?</h6>
+                        <h6>Sign up <a class="olive" href="/a-readers-review/register">here</a></h6>
+                    {% endblock %}
+                </div>
+            </div>
+            <div class="col-sm"></div>
+        </div>
+        </div>
+
+{% endblock %}
+
+{% block footer %}
+    ALL RIGHTS RESERVED 2020    |   A READER'S REVIEW</h6>
+{% endblock %}
