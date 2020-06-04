@@ -1,0 +1,158 @@
+@media screen and (max-width: 1440px){
+    h2 {
+        font-size: large;
+    }
+
+    #un_input {
+        font-size: medium;
+        padding: 3%;
+    }
+
+    h6, footer {
+        font-size: small;
+    }
+
+    #messages_div, #channel_list {
+        height: 370px;
+    }
+
+    #message_input {
+        width: 90%;
+        font-size: medium;
+    }
+}
+
+@media screen and (max-width: 1024px){
+    #messages_div, #channel_list {
+        height: 380px;
+    }
+
+    #message_input {
+        width: 85%;
+        font-size: medium;
+    }
+}
+
+@media screen and (max-width: 768px){
+
+    #messages_div, #channel_list {
+        height: 390px;
+    }
+
+    #message_input {
+        width: 80%;
+        font-size: medium;
+    }
+
+    h4 {
+        font-size: medium;
+    }
+
+    .message, .channel {
+        font-size: small;
+    }
+}
+
+@media screen and (max-width: 425px){
+    .channel_div {
+        padding: 0;
+        margin-top: 0;
+    }
+
+    .channel_home {
+        margin-top: 1%;
+    }
+
+    #messages_div{
+        height: 330px;
+    }
+
+    #channel_list {
+        display: none;
+    }
+
+    .message {
+        font-size: small;
+    }
+
+    h4 {
+        font-size: medium;
+        padding: 2%;
+    }
+
+    #message_input {
+        width: 78%;
+        font-size: medium;
+    }
+}
+
+
+@media screen and (max-width: 375px){
+    .channel_home {
+        margin-top: 2%;
+    }
+
+    .channel_div {
+        padding: 0;
+        margin-top: 0;
+    }
+
+    #messages_div {
+        height: 330px;
+    }
+
+    #message_input {
+        width: 78%;
+        font-size: medium;
+    }
+
+    .message {
+        font-size: small;
+    }
+
+    h4 {
+        font-size: medium;
+        padding: 3%;
+    }
+
+}
+
+@media screen and (max-width: 320px){
+    h2 {
+        font-size: x-large;
+    }
+
+    #un_input, h4 {
+        font-size: medium;
+        padding: 3%;
+    }
+
+    h6, footer, h5 , .btn, .channel_home, .message {
+        font-size: small;
+    }
+
+    .channel_home {
+        margin-top: 3%;
+    }
+
+    .channel_div{
+        padding: 0;
+    }
+
+    .message {
+        width: 80%;
+    }
+
+    #message_input {
+        width: 75%;
+    }
+
+    .yours {
+        margin-left: 5%;
+    }
+
+    .others {
+        margin-right: 5%;
+    }
+
+}

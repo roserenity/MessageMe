@@ -1,0 +1,170 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.footer {
+    background-color: #B98D72;
+    text-align: center;
+    font-style: italic;
+    left: 0;
+    bottom:0;
+    position: fixed;
+    padding: 1%;
+}
+
+#message_div {
+    font-style: italic;
+    width: 100%;
+}
+
+.chamoisee {
+    color: #B98D72;
+}
+
+.chamoisee_bg {
+    background-color: #B98D72;
+}
+
+.hippie_pink {
+    color: #AE4951;
+}
+
+.hippie_pink_bg, body {
+    background-color: #AE4951;
+}
+
+.wine_berry {
+    color: #57233A;
+}
+
+.wine_berry_bg, body {
+    background-color: #57233A;
+}
+
+.smoky_black {
+    color: #161B1F;
+}
+
+.smoky_black_bg {
+    background-color: #161B1F;
+}
+
+#register_page {
+    text-align: center;    
+    height: 100%;
+    align-items: center;
+}
+
+#un_input, #cn_input, #message_input {
+    border-radius: 25px;
+    border: 3px solid #AE4951;
+    padding: 1%;
+    text-align: center;
+}
+
+
+#message_input {
+    width: 90%;
+}
+
+hr {
+    height: 1%;
+    width: 50%;
+    background-color: #B98D72;
+}
+
+#reg_div, #create_channel_div {
+    text-align: center;
+}
+
+.channel_home {
+    text-align: center;
+    padding: 1%;
+    border-radius: 50px;
+    margin: 1px;
+    cursor: pointer;
+}
+
+.channel {
+    background-color: #AE4951;
+    border-radius: 50px;
+    cursor: pointer;
+    color: #57233A;
+}
+
+.channel_home:hover, .channel:hover {
+    background-color: #B98D72;
+    color: #57233A;
+}
+
+.row {
+    margin: 0;
+}
+
+.btn-light{
+    background-color: #B98D72;
+    color: #57233A;
+}
+
+#channel_name_div, #channel_name_div2, #channel_name_div3 {
+    position: absolute;
+    background-color: rgba(128, 128, 128, 0.9);
+    text-align: center;
+    z-index: 1;
+    height: 100%;
+    width:100%;
+    visibility: hidden;
+    align-items: center;
+}
+
+#channel_div, #delete_div {
+    padding: 5%;
+    text-align: center;
+}
+
+.channel_div {
+    padding-top: 1%;
+}
+
+#channel_page {
+    height: 100%;
+}
+
+#messages_div, #channel_list {
+    height: 32em;
+    overflow-y: scroll;
+    overflow-y: none;
+    background-color: #57233A;
+    padding: 1%;
+}
+
+#messages_div::-webkit-scrollbar-track, #channel_list::-webkit-scrollbar-track {
+	box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: #57233A;
+}
+
+#messages_div::-webkit-scrollbar, #channel_list::-webkit-scrollbar
+{
+	width: 5px;
+	background-color: #57233A;
+}
+
+#messages_div::-webkit-scrollbar-thumb, #channel_list::-webkit-scrollbar-thumb
+{
+	border-radius: 12px;
+	box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: #AE4951;
+}
+
+.message {
+    padding: 2%;
+}
+
+.full-button {
+    width: 100%;
+}
+
+#delete_channel_btn {
+    visibility: hidden;
+}
