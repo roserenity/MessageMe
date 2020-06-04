@@ -1,0 +1,293 @@
+{% extends('base.html') %}
+
+{% block title %}
+    MessageMe
+{% endblock%}
+
+{% block script %}
+    <script>
+        var ls_channel = window.localStorage.getItem('channel');
+
+        var socket = io.connect('http://'+document.domain+':'+location.port)
+        socket.on('connect', function(){
+            console.log("connected");
+            if(window.localStorage.getItem('channel')){
+                socket.emit('get_cn');
+                socket.emit('get_message', ls_channel); 
+                socket.emit('get_owner', ls_channel);  
+            } else {
+                window.location.href = "/message-me";
+            }
+        });
+
+        socket.on('new_channel_json', function(channel_data){
+            $('.info_owner').remove();
+            $('.channel_link').remove();
+            display_channels(channel_data);
+        });
+
+        socket.on('new_message_json', function(message_data, channel){
+            if(ls_channel == channel){
+                $('.channel_message').remove();
+                display_msg(message_data);
+            }
+        });
+
+        socket.on('set_delete_button', function(owner){
+           if ( owner == window.localStorage.getItem('display_name')) {
+               document.getElementById('delete_channel_btn').style.visibility = "visible";
+           }
+        });
+
+        function gotochannel(channel) {
+            window.localStorage.setItem('channel', channel);
+            window.location.href = "/message-me/"+channel;
+        }
+
+        function display_channels( channel_data ) {
+            var counter = 0;
+            var display_name = window.localStorage.getItem('display_name');
+            var length = channel_data['channel'].length;
+            var info_owner_div = document.createElement("div")            
+            var owner = document.createTextNode("Display name: "+ display_name );
+
+            info_owner_div.className = "info_owner chamoisee";
+            info_owner_div.append(owner);
+            document.getElementById("channel_list").append(info_owner_div);
+
+            for(var i=0; i!= length; i++ ){
+                if ( channel_data.channel[i].owner == display_name ){
+                    if (counter == 0){
+                        var info_owner_div = document.createElement("div");
+                        var your_channels = document.createTextNode("YOUR CHANNEL/S:");
+                        info_owner_div.className = "info_owner chamoisee";
+                        info_owner_div.append(your_channels);
+                        document.getElementById("channel_list").append(info_owner_div);
+
+                        counter = 1;
+                    }
+                    var channeldiv = document.createElement('div');
+                    var containerdiv = document.createElement('div');
+
+                    channeldiv.className = "channel_div row container-fluid pt-3 channel_link";
+                    containerdiv.className = "col-sm-12 hippie_pink_bg chamoisee channel"
+
+                    var channel_name = channel_data.channel[i].cn;
+                    containerdiv.append(channel_name);
+                    containerdiv.value=channel_name;
+                    containerdiv.onclick = function(){
+                        gotochannel(this.textContent);
+                    }
+
+                    channeldiv.append(containerdiv);
+                    
+                    document.getElementById("channel_list").append(channeldiv);
+                }
+            }
+
+            counter = 0;
+
+            for(var i=0; i!= length; i++ ){
+                if ( channel_data.channel[i].owner != display_name){
+                    if (counter == 0){
+                        var divider = document.createElement("hr");
+                        divider.className = "info_owner";
+                        document.getElementById("channel_list").append(divider);
+                        counter = 1;
+                    }
+                    
+                    var channeldiv = document.createElement('div');
+                    var containerdiv = document.createElement('div');
+
+                    channeldiv.className = "channel_div row container-fluid pt-3 channel_link";
+                    containerdiv.className = "col-sm-12 hippie_pink_bg chamoisee channel"
+
+                    var channel_name = channel_data.channel[i].cn;
+                    containerdiv.append(channel_name);
+                    containerdiv.value=channel_name;
+                    containerdiv.onclick = function(){
+                        gotochannel(this.textContent);
+                    }
+
+                    channeldiv.append(containerdiv);
+                    
+                    document.getElementById("channel_list").append(channeldiv);
+                }
+            }
+        }
+
+        function sendmessage() {
+            var d = new Date();
+            var message = document.getElementById("message_input").value;
+            document.getElementById("message_input").value = "";
+            socket.emit('set_message', {
+                'channel': ls_channel, 
+                'message': message,
+                'sender': window.localStorage.getItem('display_name'),
+                'date' : d.toLocaleDateString(),
+                'time': d.toLocaleTimeString()
+            });
+        }
+
+        socket.on('display_message', function(message_data, channel) {
+            if(channel == ls_channel){
+                $('.channel_message').remove();
+                display_msg(message_data);
+                var messages_div = document.getElementById("messages_div");
+                messages_div.scrollTop = messages_div.scrollHeight;
+            }   
+        });
+
+        function display_msg(message_data) {
+            var length = message_data['messages'].length;
+            
+            for(var i=0; i!= length; i++ ) {
+                var messagediv = document.createElement('div');
+                var messagecontainerdiv = document.createElement('div');
+                var emptydiv = document.createElement('div');
+                var messageinfodiv = document.createElement('div');
+                var message = message_data.messages[i].message;
+
+                messagediv.className = "row container-fluid pt-3 channel_message";
+                emptydiv.className = "col-sm-7";
+                
+                messagecontainerdiv.append(message);
+
+                if (message_data.messages[i].sender == window.localStorage.getItem('display_name')){
+                    messagecontainerdiv.className = "col-sm-5 hippie_pink_bg smoky_black message yours"
+                    messageinfodiv.append("sent on "+message_data.messages[i].date+" at "+message_data.messages[i].time);
+                    messagecontainerdiv.append(messageinfodiv);
+                    messagediv.append(emptydiv);
+                    messagediv.append(messagecontainerdiv);
+                } else {
+                    messagecontainerdiv.className = "col-sm-5 chamoisee_bg smoky_black message others"
+                    messageinfodiv.append("sent by "+message_data.messages[i].sender);
+                    messageinfodiv.append(" on "+message_data.messages[i].date+" at "+message_data.messages[i].time);
+                    messagecontainerdiv.append(messageinfodiv);
+                    messagediv.append(messagecontainerdiv);
+                    messagediv.append(emptydiv);
+                }
+
+                document.getElementById("messages_div").append(messagediv);
+            }
+        }
+
+        function create_channel(){
+            var channel = document.getElementById("cn_input").value;
+
+            socket.emit('check_cn',{
+                'cn': channel,
+                'owner': localStorage.getItem('display_name')
+            });
+
+            socket.on('ret_cn_avail', function(msg){
+                if(msg == 1){
+                    gotochannel(channel);
+                } else {
+                    var msg = document.createTextNode("Channel name already in use, enter another name");
+                    document.getElementById("message").appendChild(msg);
+                    console.log("channel name in use");
+                }
+            });
+
+        }
+        
+        function show_channel_input() {
+            document.getElementById("channel_name_div2").style.visibility="visible";
+        }
+
+        function show_delete_div() {
+            document.getElementById("channel_name_div3").style.visibility="visible";
+        }
+
+        function close_channel_div() {
+            document.getElementById("channel_name_div2").style.visibility="hidden";
+            document.getElementById("channel_name_div3").style.visibility="hidden";
+        } 
+
+        function delete_channel() {
+            socket.emit('delete_channel', {
+                'channel' : ls_channel
+            });
+
+            socket.on('delete_channel_ret', function(){
+                window.localStorage.removeItem('channel')
+                window.location.href = "/message-me";
+            });
+        }
+
+        socket.on('delete_channel_message', function(channel){
+
+            if(ls_channel == channel) {
+                
+                $('.channel_message').remove();
+                var messagediv = document.createElement('div');
+                var messagecontainerdiv = document.createElement('div');
+                var message = "This channel has been deleted";
+
+                messagediv.className = "row container-fluid pt-3";
+                messagecontainerdiv.append(message);
+                messagecontainerdiv.className = "col-sm-12 hippie_pink_bg smoky_black"
+                messagediv.append(messagecontainerdiv);
+
+                document.getElementById("messages_div").append(messagediv);
+                document.getElementById("message_div").style.visibility="hidden";
+            }
+        });
+
+
+    </script>
+{% endblock %}
+
+
+{% block body %}
+
+    <div id="channel_name_div2" class="row container-fluid">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+            <div id="channel_div" class="hippie_pink_bg">
+                <h5><input id="cn_input" class="wine_berry_bg chamoisee" placeholder="Enter channel name" pattern="[^'\x22]+[a-z0-9._%+-].{8,15}" required></input></h5>
+                <h6 id="message"></h6>
+                <button class="btn btn-light" onclick="close_channel_div()"> back </button> &nbsp;
+                <button class="btn btn-light" onclick="create_channel()"> proceed </button>
+            </div>
+        </div>
+        <div class="col-sm-2"></div>
+    </div>
+
+    <div id="channel_name_div3" class="row container-fluid">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+            <div id="delete_div" class="hippie_pink_bg">
+                <h5>Are you sure to delete this channel?</h5>
+                <button class="btn btn-light" onclick="close_channel_div()"> back </button> &nbsp;
+                <button class="btn btn-light" onclick="delete_channel()"> proceed </button>
+            </div>
+        </div>
+        <div class="col-sm-2"></div>
+    </div>
+
+    <div class="row container-fluid">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-3 p-2">
+            <div><h4 class="chamoisee"><a>Channels</a></h4></div>
+            <button type="button" class="btn btn-dark full-button" onclick="show_channel_input()"> Create Channel </button></h5>
+            <div id="channel_list"></div>
+            <button id="delete_channel_btn" type="button" class="btn btn-dark full-button" onclick="show_delete_div()"> Delete Channel </button></h5>
+        </div>
+        <div id="channel_messages_div" class="col-sm-7 wine_berry_bg smoky_black ">
+                <div id="channel_name" class="smoky_black_bg chamoisee p-2">
+                    <h4>    {{ channel_name }}</h4>
+                </div>
+                <div id="messages_div"></div>
+                <div id="message_div" class="wine_berry_bg mt-4">
+                    <form>
+                        <h5><input id="message_input" class="wine_berry_bg chamoisee" placeholder="Enter your message" pattern="[^'\x22]+[a-z0-9._%+-]" required></input>
+                        <button type="button" class="btn btn-light" onclick="sendmessage()"> Send </button></h5>
+                    </form>
+                </div>
+        </div>
+        <div class="col-sm-1 "></div>
+    </div>
+    
+{% endblock %}
