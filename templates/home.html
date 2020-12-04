@@ -1,0 +1,165 @@
+{% extends('base.html') %}
+
+{% block title %} 
+    Message Me - Home
+{% endblock %}
+
+{% block script %}
+    <script>
+        window.localStorage.removeItem('channel')
+
+        var socket = io.connect('http://'+document.domain+':'+location.port)
+        socket.on('connect', function(){
+                console.log("connected");
+                socket.emit('get_cn');
+        });
+        
+        socket.on('new_channel_json', function(channel_data){
+            $('.channel_link').remove();
+            display_channels(channel_data);
+        });
+
+        function show_channel_input() {
+            document.getElementById("channel_name_div").style.visibility="visible";
+        }
+
+        function close_channel_div() {
+            document.getElementById("channel_name_div").style.visibility="hidden";
+        }
+
+        function create_channel(){
+            var channel = document.getElementById("cn_input").value;
+
+            socket.emit('check_cn',{
+                'cn': channel,
+                'owner': localStorage.getItem('display_name')
+            });
+
+            socket.on('ret_cn_avail', function(msg){
+                if(msg == 1){
+                    window.localStorage.setItem('channel', channel);
+                    window.location.href = "/message-me/"+channel;
+                } else {
+                    var msg = document.createTextNode("Channel name already in use, enter another name");
+                    document.getElementById("message").appendChild(msg);
+                    console.log("channel name in use");
+                }
+            });
+
+        }
+
+        function gotochannel(channel) {
+            window.localStorage.setItem('channel', channel);
+            window.location.href = "/message-me/"+channel;
+        }
+
+        function display_channels( channel_data ) {
+            var length = channel_data['channel'].length;
+            
+            if ( length > 4 ) {
+                for(var i=0; i!= length; i++ ){
+                    var channeldiv = document.createElement('div');
+                    var containerdiv1 = document.createElement('div');
+                    var containerdiv2 = document.createElement('div');
+                    var emptydiv1 = document.createElement('div');
+                    var emptydiv2 = document.createElement('div');
+                    var channel_name1 = '';
+                    var channel_name2 = '';
+
+                    channeldiv.className = "channel_div row container-fluid channel_link";
+                    containerdiv1.className = "col-sm-3 hippie_pink_bg smoky_black channel_home"                    
+
+                    emptydiv1.className = "col-sm-3";
+                    emptydiv2.className = "col-sm-3";
+
+                    channel_name1 = channel_data.channel[i].cn;
+                    containerdiv1.append(channel_name1);
+                    containerdiv1.onclick = function(){
+                        gotochannel(this.textContent);
+                    }
+
+                    i = i+1;
+                    if (i<length) {
+                        containerdiv2.className = "col-sm-3 hippie_pink_bg smoky_black channel_home"
+                        channel_name2 = channel_data.channel[i].cn;
+                        containerdiv2.append(channel_name2);
+                        containerdiv2.onclick = function(){
+                            gotochannel(this.textContent);
+                        }
+                    } else {
+                        containerdiv2.className = "col-sm-3"
+                    }
+
+                    channeldiv.append(emptydiv1);
+                    channeldiv.append(containerdiv1);
+                    channeldiv.append(containerdiv2);
+                    channeldiv.append(emptydiv2);
+
+                    document.getElementById("channels").append(channeldiv);
+                }
+            } else {
+                console.log('here');
+
+                for(var i=0; i!= length; i++ ){
+                    var channeldiv = document.createElement('div');
+                    var containerdiv = document.createElement('div');            
+                    var emptydiv1 = document.createElement('div');
+                    var emptydiv2 = document.createElement('div');
+
+                    channeldiv.className = "channel_div row container-fluid pt-3 channel_link";
+                    containerdiv.className = "col-sm-4 hippie_pink_bg chamoisee channel_home"
+
+                    emptydiv1.className = "col-sm-4";
+                    emptydiv2.className = "col-sm-4";
+
+                    var channel_name = channel_data.channel[i].cn;
+                    containerdiv.append(channel_name);
+                    containerdiv.value=channel_name;
+                    containerdiv.onclick = function(){
+                        gotochannel(this.textContent);
+                    }
+
+                    channeldiv.append(emptydiv1);
+                    channeldiv.append(containerdiv);
+                    channeldiv.append(emptydiv2);
+                    
+                    document.getElementById("channels").append(channeldiv);
+                }
+            }
+        }
+
+        
+
+        
+
+    </script>
+{% endblock %}
+
+{% block body %}
+
+    <div id="channel_name_div" class="row container-fluid">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+            <div id="channel_div" class="hippie_pink_bg">
+                <h5><input id="cn_input" class="wine_berry_bg chamoisee" placeholder="Enter channel name" pattern="[^'\x22]+[a-z0-9._%+-].{8,15}" required></input></h5>
+                <h6 id="message"></h6>
+                <button class="btn btn-light" onclick="close_channel_div()"> back </button> &nbsp;
+                <button class="btn btn-light" onclick="create_channel()"> proceed </button>
+            </div>
+        </div>
+        <div class="col-sm-2"></div>
+    </div>
+
+    <div id="create_channel_div" class="container-fluid p-4">
+        <h5 class="chamoisee">Create your own channel!</h5>
+        <button class="btn btn-light" onclick="show_channel_input()"> create channel </button> <br />
+        <h5 class="chamoisee">or</h5>
+        <h5 class="chamoisee">Pick a channel and start chatting!</h5>
+        <hr />
+    </div>
+
+    <div id="channels" class="pb-5">
+
+    </div>
+    
+{% endblock %}
